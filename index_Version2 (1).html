@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Proxy Injector (GitHub Pages UI)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; padding: 24px; max-width: 880px; margin: auto; }
+    input[type="url"] { width: 70%; padding: 8px; font-size: 16px; }
+    button { padding: 8px 12px; font-size: 16px; }
+    .hint { margin-top: 12px; color: #555; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Proxy Injector (GitHub Pages UI)</h1>
+  <p>Enter a full URL and click "Open via Proxy". This page will redirect you to the edge proxy worker.</p>
+
+  <form id="proxyForm">
+    <input id="targetUrl" type="url" placeholder="https://example.com" required />
+    <button type="submit">Open via Proxy</button>
+  </form>
+
+  <p class="hint">Worker URL: <span id="workerUrlDisplay">REPLACE_WITH_WORKER_URL</span></p>
+
+  <script>
+    // Replace this with your deployed worker URL (the workers.dev URL)
+    // Example: const WORKER_URL = "https://your-worker-name.<account>.workers.dev";
+    const WORKER_URL = "REPLACE_WITH_WORKER_URL";
+
+    document.getElementById('workerUrlDisplay').textContent = WORKER_URL;
+
+    document.getElementById('proxyForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('targetUrl').value.trim();
+      if (!input) return;
+      // Basic validation
+      try {
+        new URL(input);
+      } catch (_) {
+        alert('Please enter a valid URL (include https://).');
+        return;
+      }
+      // Redirect the browser to the worker proxy which will fetch and rewrite the page
+      const dest = `${WORKER_URL}/?url=${encodeURIComponent(input)}`;
+      window.location.href = dest;
+    });
+  </script>
+</body>
+</html>
